@@ -5,21 +5,25 @@ phases:
     runtime-versions:
       java: corretto8
     commands:
-      - echo "Installing Maven..."
+      - echo "=== INSTALL PHASE ==="
       - yum install -y maven
+      - java -version
+      - mvn -version
   
   build:
     commands:
-      - echo "Building the application..."
-      - mvn clean package
+      - echo "=== BUILD PHASE ==="
+      - echo "Liste des fichiers avant build:"
+      - find . -type f -name "*.xml" -o -name "*.jsp" -o -name "*.java" | head -20
+      - mvn clean package -X  # Le -X donne les logs détaillés
   
   post_build:
     commands:
-      - echo "Build completed successfully!"
-      - ls -la target/
+      - echo "=== POST_BUILD PHASE ==="
+      - if [ -d "target" ]; then ls -la target/; else echo "Dossier target non trouvé"; fi
 
 artifacts:
   files:
-    - target/lab2-webapp.war
+    - target/*.war
     - appspec.yml
     - scripts/**/*
