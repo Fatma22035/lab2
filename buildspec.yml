@@ -1,25 +1,22 @@
 version: 0.2
-
 phases:
   install:
     runtime-versions:
       java: corretto8
     commands:
-      - echo "Installing Maven..."
       - yum install -y maven
-  
   build:
     commands:
-      - echo "Building the application..."
+      - mvn clean install
       - mvn package
-  
-  post_build:
-    commands:
-      - echo "Build completed..."
-      - mv target/*.war webapp.war
+      - mkdir output
+      - cp target/*.war output/
 
 artifacts:
   files:
-    - webapp.war
+    - output/*.war
     - appspec.yml
-    - scripts/**/*
+    - scripts/*
+    - install_dependencies.sh
+    - start_server.sh
+    - stop_server.sh
